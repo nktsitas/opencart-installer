@@ -24,6 +24,29 @@ Installing - Usage
 Usage
 -----
 
-see [install]
+1. run cygwin setup and add mysql
+2. create a file at ~/.my.cnf containing:
+
+		[client] 
+		user=root 
+		host=127.0.0.1 
+		password= 
+
+3. Find your cygwin folder (C:/cygwin , C:/cygwin64, …)
+4. go to *&lt;cygwin_folder&gt;*/var/local (create folder local if doesn’t exist)
+5. copy paste opencart versions in there so you end up with  
+
+		<cygwin_folder>/var/local/opencart-1.5.5.1/upload/…
+		<cygwin_folder>/var/local/opencart-1.5.6.1/upload/…
+		.
+		.
+6. Copy paste base folder of working templates  
+
+		<cygwin_folder>/var/local/Journal/Journal_v.1.2.0/….
+
+7. Copy **install\_opencart.sh** into *&lt;cygwin_folder&gt;*/usr/local/bin
+8. Run:  
+
+		ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart
 
 [install]: https://docs.google.com/document/d/14GHVib5uDEse9umzujvx029XewbnuzGKrqpfv-TAwoM/edit
