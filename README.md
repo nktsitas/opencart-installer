@@ -18,11 +18,8 @@ Known Issues
 * Only Journal template supported so far
 
 
-Installing - Usage
+Install
 ----------
-
-Usage
------
 
 1. run cygwin setup and add mysql
 2. create a file at ~/.my.cnf containing:
@@ -48,5 +45,15 @@ Usage
 8. Run:  
 
 		ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart
+
+Usage
+-----
+1. navigate to the folder you wish to install opencart
+2. run:  
+
+		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url>
+
+3. Base opencart should be installed and accessible through __&lt;domain\_url&gt;__ & __&lt;domain\_url&gt;/admin__ with admin:admin123
+4. Database &lt;user\_name&gt;\_&lt;database\_name&gt; should have been created in mysql server specified inside install_opencart.sh
 
 [install]: https://docs.google.com/document/d/14GHVib5uDEse9umzujvx029XewbnuzGKrqpfv-TAwoM/edit
