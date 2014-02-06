@@ -141,6 +141,8 @@ OS=`uname`
 
 # copy opencart
 cp -r $OPENCART_PATH/* $DESTINATION_PATH
+cp $OPENCART_PATH/.htaccess.txt $DESTINATION_PATH/.htaccess
+cp $OPENCART_PATH/.gitignore $DESTINATION_PATH/.gitignore
 
 # rename config files and change permissions
 mv $DESTINATION_PATH/config-dist.php $DESTINATION_PATH/config.php
@@ -204,7 +206,7 @@ fi
 
 echo "Installing opencart basic..."
 if [[ "$MYSQL_PASS" == '' ]]; then
-    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
+    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password "" --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 else
     php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 fi
