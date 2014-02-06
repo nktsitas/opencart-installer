@@ -1,0 +1,41 @@
+# Config and Htaccess Files
+.htaccess
+config.php
+admin/config.php
+
+# System Cache Files
+system/cache/*
+!system/cache/index.html
+
+# Image File
+!image/no_image.jpg
+
+# Image Cache Files
+image/cache/*
+!image/cache/index.html
+
+# Modification Files
+system/modification/*
+!system/modification/index.html
+
+# Templates Files
+image/templates/*
+image/templates/default.jpg
+
+# Download Files
+system/download/*
+!system/download/index.html
+
+!data/index.html
+
+# Flags 
+# remove sharp char if you want to add flags to gitignore
+# flags/*
+
+# Log Files
+system/logs/*
+!system/logs/index.html
+
+# If you want to ignore install file use following lines [on development mode]
+# backup.install/*
+# install/*
