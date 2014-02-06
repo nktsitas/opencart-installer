@@ -261,5 +261,3 @@ else
         echo "Template $TEMPLATE is not supported. Using default." >&2
     fi
 fi
-
-

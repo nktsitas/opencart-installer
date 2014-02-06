@@ -67,7 +67,7 @@ Install/Sync Online-Production (git & git-ftp)
 		git commit -m 'first commit'
 
 3. Connect to production with ssh
-4. install opencart & templates online (see Usage)
+4. install opencart online (see Usage)
 5. setup git-ftp  
 
 		git config git-ftp.production.url <production_path>
@@ -85,11 +85,11 @@ Install/Sync Online-Production (git & git-ftp)
 
 6. create file .git-ftp.log and write inside the commit hash from local folder (enter following command to add it to clipboard)
 
-		git log --pretty=oneline | awk '{print $1}' | clip
+		git log --pretty=oneline | awk 'NR==1{print $1}' | clip
 
 	if ssh keys are installed in local machine, you can use scp to upload .git-ftp.log with one command (change user & project_name):  
 
-		git log --pretty=oneline | awk '{print $1}' >> .git-ftp.log && scp .git-ftp.log root@cheetasoft.gr:/home/<user>/public_html/<project_name> && rm .git-ftp.log
+		git log --pretty=oneline | awk 'NR==1{print $1}' >> .git-ftp.log && scp .git-ftp.log root@cheetasoft.gr:/home/<user>/public_html/<project_name> && rm .git-ftp.log
 
 
 [install]: https://docs.google.com/document/d/14GHVib5uDEse9umzujvx029XewbnuzGKrqpfv-TAwoM/edit
