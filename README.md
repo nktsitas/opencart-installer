@@ -12,11 +12,6 @@ Can be used under linux, or windows with cygwin
 Can also pre-install templates if specified
 
 
-Known Issues
-------------
-
-* Only Journal template supported so far
-
 
 Install
 ----------
@@ -28,6 +23,7 @@ Install
 		user=root 
 		host=127.0.0.1 
 		password= 
+
 edit /etc/opencart-install.conf
 3. Find your cygwin folder (C:/cygwin , C:/cygwin64, …)
 4. go to *&lt;cygwin_folder&gt;*/var/local (create folder local if doesn’t exist)

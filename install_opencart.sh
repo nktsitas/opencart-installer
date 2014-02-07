@@ -18,7 +18,7 @@ function download()
 }
 
 
-while getopts ":p:u:d:t:v:m:n:f:h:e:g" opt; do
+while getopts ":p:u:d:t:v:m:n:f:h:e" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
@@ -48,10 +48,6 @@ while getopts ":p:u:d:t:v:m:n:f:h:e:g" opt; do
         h)
              HOST=$OPTARG
             # echo "-h was triggered, Parameter: $HOST" >&2
-            ;;
-        g)
-             FETCH=true
-            # echo "-g was triggered, Parameter: $FETCH" >&2
             ;;
 
         m)
@@ -161,8 +157,8 @@ fi
 
 # detect Operating System
 OS=`uname`
-
-if [ "$FETCH" ]
+echo $VERSION;
+if [ $VERSION == stable ]
 then
 # purge tmp folder
 rm -drf $TEMPDIR/upload
