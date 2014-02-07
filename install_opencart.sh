@@ -1,9 +1,32 @@
 #!/bin/bash
-while getopts ":p:u:d:t:v:m:n:f:h" opt; do
+
+source /etc/opencart-installer.conf
+
+MYSQL_HOST=localhost
+MYSQL_USERNAME=root
+MYSQL_PASS=''
+
+# -----------------------------
+
+function download()
+{
+    echo -n "    "
+    wget --progress=dot $URL -O $TEMPDIR/opencart.zip | grep --line-buffered "%" | \
+        sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
+    echo -ne "\b\b\b\b"
+    echo " DONE"
+}
+
+
+while getopts ":p:u:d:t:v:m:n:f:h:e:g" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
             # echo "-p was triggered, Parameter: $DESTINATION_PATH" >&2
+            ;;
+        e)
+            EXTENSION=$OPTARG
+            # echo "-e was triggered, Parameter: $EXTENSION" >&2
             ;;
         u)
             FOR_USER=$OPTARG
@@ -25,6 +48,10 @@ while getopts ":p:u:d:t:v:m:n:f:h" opt; do
         h)
              HOST=$OPTARG
             # echo "-h was triggered, Parameter: $HOST" >&2
+            ;;
+        g)
+             FETCH=true
+            # echo "-g was triggered, Parameter: $FETCH" >&2
             ;;
 
         m)
@@ -50,38 +77,19 @@ while getopts ":p:u:d:t:v:m:n:f:h" opt; do
     esac
 done
 
-if [ -z "$VERSION" ]
-then
-    VERSION="1.5.5.1"
-    echo "using default version: $VERSION" >&2
-else
-    case $VERSION in
-        "1.5.5.1") 
-            echo "using version: $VERSION" >&2
-            ;;
-        "1.5.6.1") 
-            echo "using version: $VERSION" >&2
-            ;;
-        *)
-            echo "unsupported opencart version ($VERSION). Aborting" >&2
-            exit 1
-            ;;
-    esac
+if [ ! -d "$TEMPDIR" ]; then
+mkdir $TEMPDIR;
 fi
 
-# VERSION=1.5.5.1
-OPENCART_PATH=/var/local/opencart-$VERSION/upload
-TRUNCATE_FILE=/usr/local/bin/truncate_opencart.sql
-MYSQL_HOST=localhost
-MYSQL_USERNAME=root
-# MYSQL_PASS=lt_mysql123ff9058
-MYSQL_PASS=''
+# -v <version> (version to install)
+if [ -z "$VERSION" ]
+then
+    VERSION="current"
+    echo "using default version: $CURRENT_VERSION" >&2
+else
+    echo "using version: $VERSION" >&2
+fi
 
-# Journal for opencart v1.5.5.1 
-TEMPLATE_PATH_JOURNAL_v1_5_5_1=/var/local/Journal/Journal_v.1.2.0/OpenCart_v.1.5.5.1
-JOURNAL_IMAGE_SETUP_SQL=/var/local/Journal/Journal_v.1.2.0/OpenCart_v.1.5.5.1/opencart_image_journal.sql
-JOURNAL_MODULES_SETUP_SQL=/var/local/Journal/Journal_v.1.2.0/OpenCart_v.1.5.5.1/opencart_journal_modules.sql
-# -----------------------------
 
 # -p <path> (current folder if none given)
 if [ -z "$DESTINATION_PATH" ]
@@ -107,8 +115,7 @@ else
     echo "user: $FOR_USER" >&2
 fi
 
-# -m <domain> (http://cheetasoft.gr/<path> if none given)
-
+# -h <hostname> (http://cheetasoft.gr/<domain> if none given)
 if [ -z "$HOST" ]
 then
   HOST="cheetasoft.gr"
@@ -117,6 +124,7 @@ else
     echo "host: $HOST" >&2
 fi
 
+# -m <domain> (http://<hostname>/mystore if none given)
 if [ -z "$DOMAIN" ]
 then
     if [ -z "$PROJECT_NAME" ]
@@ -154,15 +162,36 @@ fi
 # detect Operating System
 OS=`uname`
 
+if [ "$FETCH" ]
+then
+# purge tmp folder
+rm -drf $TEMPDIR/upload
+
+# download opencart
+echo -n "Downloading $URL:"
+download $URL
+# extract opencart
+unzip $TEMPDIR/opencart.zip "opencart-$CURRENT_VERSION/upload/*" -d $TEMPDIR
+mv $TEMPDIR/opencart-$CURRENT_VERSION/upload $TEMPDIR/.
+rm -drf $TEMPDIR/opencart-$CURRENT_VERSION
+rm  $TEMPDIR/opencart.zip
+# check if opencart is in tmp folder
+if [ -f $TEMPDIR/upload/index.php ];
+then
+OPENCART_PATH=$TEMPDIR/upload
+fi 
+fi
+
 # copy opencart
 cp -r $OPENCART_PATH/* $DESTINATION_PATH
 cp $OPENCART_PATH/.htaccess.txt $DESTINATION_PATH/.htaccess
 cp $OPENCART_PATH/.gitignore $DESTINATION_PATH/.gitignore
 
-# rename config files and change permissions
+# rename config files 
 mv $DESTINATION_PATH/config-dist.php $DESTINATION_PATH/config.php
 mv $DESTINATION_PATH/admin/config-dist.php $DESTINATION_PATH/admin/config.php
 
+# change permissions
 if [[ "$OS" == 'Linux' ]]; then
     # change permissions
     chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH
@@ -216,7 +245,15 @@ fi
  #   echo "Step 3 not yet completed. Aborting."
  #   rm -rf $DESTINATION_PATH/
  #   echo "drop database $DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS
- #   exit 1
+ #   exit 1download()
+{
+    local url=$1
+    echo -n "    "
+    wget --progress=dot $url 2>&1 | grep --line-buffered "%" | \
+        sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
+    echo -ne "\b\b\b\b"
+    echo " DONE"
+}
 #fi
 
 echo "Installing opencart basic..."
@@ -276,3 +313,4 @@ else
         echo "Template $TEMPLATE is not supported. Using default." >&2
     fi
 fi
+
