@@ -51,11 +51,11 @@ Usage
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url>
+		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url>
 
 3. Base opencart should be installed and accessible through __&lt;domain\_url&gt;__ & __&lt;domain\_url&gt;/admin__ with admin:admin123
 4. Database &lt;user\_name&gt;\_&lt;database\_name&gt; should have been created in mysql server specified inside install_opencart.sh
-
+5. -h sets the hostname of the store, ie cheetasoft.gr
 Install/Sync Online-Production (git & git-ftp)
 -----
 1. navigate to project base folder.  

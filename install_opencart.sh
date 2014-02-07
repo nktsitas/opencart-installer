@@ -1,5 +1,5 @@
 #!/bin/bash
-while getopts ":p:u:d:t:v:m:n:f" opt; do
+while getopts ":p:u:d:t:v:m:n:f:h" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
@@ -11,19 +11,25 @@ while getopts ":p:u:d:t:v:m:n:f" opt; do
             ;;
         d)
             DATABASE=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-d was triggered, Parameter: $DATABASE" >&2
             ;;
         t)
             TEMPLATE=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-t was triggered, Parameter: $TEMPLATE" >&2
             ;;
         v)
             VERSION=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-v was triggered, Parameter: $VERSION" >&2
             ;;
+           
+        h)
+             HOST=$OPTARG
+            # echo "-h was triggered, Parameter: $HOST" >&2
+            ;;
+
         m)
             DOMAIN=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-m was triggered, Parameter: $DOMAIN" >&2
             ;;
         n)
             PROJECT_NAME=$OPTARG
@@ -31,7 +37,7 @@ while getopts ":p:u:d:t:v:m:n:f" opt; do
             ;;
         f)
             TRUNCATE=true
-            echo "will truncate database"
+            echo "will truncate the database"
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -102,14 +108,23 @@ else
 fi
 
 # -m <domain> (http://cheetasoft.gr/<path> if none given)
+
+if [ -z "$HOST" ]
+then
+  HOST="cheetasoft.gr"
+echo "no hostname given, setting default: $HOST" >&2
+else
+    echo "host: $HOST" >&2
+fi
+
 if [ -z "$DOMAIN" ]
 then
     if [ -z "$PROJECT_NAME" ]
     then
-        DOMAIN="http://cheetasoft.gr/mystore/"
+        DOMAIN="http://$HOST/mystore/"
         echo "no domain/project name given, setting default: $DOMAIN" >&2
     else
-        DOMAIN="http://cheetasoft.gr/$PROJECT_NAME/"
+        DOMAIN="http://$HOST/$PROJECT_NAME/"
         echo "no domain given, setting with project name: $DOMAIN" >&2
     fi
 else
