@@ -56,7 +56,8 @@ Usage
 3. Base opencart should be installed and accessible through __&lt;domain\_url&gt;__ & __&lt;domain\_url&gt;/admin__ with admin:admin123
 4. Database &lt;user\_name&gt;\_&lt;database\_name&gt; should have been created in mysql server specified inside install_opencart.sh
 5. -h sets the hostname of the store, ie cheetasoft.gr
-Install/Sync Online-Production (git & git-ftp)
+
+6. Install/Sync Online-Production (git & git-ftp)
 -----
 1. navigate to project base folder.  
 2. initialize git & submit first commit
