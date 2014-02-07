@@ -28,7 +28,7 @@ Install
 		user=root 
 		host=127.0.0.1 
 		password= 
-
+edit /etc/opencart-install.conf
 3. Find your cygwin folder (C:/cygwin , C:/cygwin64, …)
 4. go to *&lt;cygwin_folder&gt;*/var/local (create folder local if doesn’t exist)
 5. copy paste opencart versions in there so you end up with  
