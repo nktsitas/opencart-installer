@@ -51,8 +51,8 @@ Windows Install
 
 8. Copy **install\_opencart** into *&lt;cygwin_folder&gt;*/usr/local/bin
 9. Run:  
-
-		ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart-install
+	
+	  ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart-install
 
 Usage
 -----
