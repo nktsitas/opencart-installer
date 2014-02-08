@@ -7,7 +7,7 @@ source /etc/opencart-installer.conf
 function download()
 {
     echo -n "    "
-    wget --progress=dot $URL -O $TEMPDIR/opencart.zip | grep --line-buffered "%" | \
+    wget --progress=dot $CURRENT_VERSION_URL -O $TEMP_DIR/opencart.zip | grep --line-buffered "%" | \
         sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
     echo -ne "\b\b\b\b"
     echo " DONE"
@@ -85,8 +85,8 @@ printf "Enter the password for the database: "
 read -s  MYSQL_PASS
 
 
-if [ ! -d "$TEMPDIR" ]; then
-mkdir $TEMPDIR;
+if [ ! -d "$TEMP_DIR" ]; then
+mkdir $TEMP_DIR;
 fi
 
 # -v <version> (version to install)
@@ -169,24 +169,50 @@ fi
 
 # detect Operating System
 OS=`uname`
-echo $VERSION;
+
 if [ $VERSION == stable ]
 then
 # purge tmp folder
-rm -drf $TEMPDIR/upload
+rm -drf $TEMP_DIR/upload
 
 # download opencart
-echo -n "Downloading $URL:"
-download $URL
+echo -n "Downloading $CURRENT_VERSION_URL:"
+download $CURRENT_VERSION_URL
 # extract opencart
-unzip $TEMPDIR/opencart.zip "opencart-$CURRENT_VERSION/upload/*" -d $TEMPDIR
-mv $TEMPDIR/opencart-$CURRENT_VERSION/upload $TEMPDIR/.
-rm -drf $TEMPDIR/opencart-$CURRENT_VERSION
-rm  $TEMPDIR/opencart.zip
+unzip $TEMP_DIR/opencart.zip "opencart-$CURRENT_VERSION/upload/*" -d $TEMP_DIR
+mv $TEMP_DIR/opencart-$CURRENT_VERSION/upload $TEMP_DIR/.
+rm -drf $TEMP_DIR/opencart-$CURRENT_VERSION
+rm  $TEMP_DIR/opencart.zip
 # check if opencart is in tmp folder
-if [ -f $TEMPDIR/upload/index.php ];
+if [ -f $TEMP_DIR/upload/index.php ];
 then
-OPENCART_PATH=$TEMPDIR/upload
+OPENCART_PATH=$TEMP_DIR/upload
+fi 
+elif [ $VERSION == upstream ]
+# purge tmp folder
+rm -drf $TEMP_DIR/upload
+
+# clone opencart
+cd $DESTINATION_PATH
+git clone $UPSTREAM
+
+# check if opencart is in folder
+if [ -f opencart/upload/index.php ];
+then
+OPENCART_PATH=$DESTINATION_PATH/opencart/upload
+fi 
+elif [ $VERSION == origin ]
+# purge tmp folder
+rm -drf $TEMP_DIR/upload
+
+# clone opencart
+cd $DESTINATION_PATH
+git clone $ORIGIN
+
+# check if opencart is in folder
+if [ -f opencart/upload/index.php ];
+then
+OPENCART_PATH=$DESTINATION_PATH/opencart/upload
 fi 
 fi
 

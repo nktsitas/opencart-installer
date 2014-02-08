@@ -61,10 +61,10 @@ Usage
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
-versions: stable = fetch the latest stable branch via wget
-		  1.5.5.1 = fetch a local branch located in /Projects/opencart/opencart-VERSION  
-		  you can change the location of opencart base in the conf
+	  opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
+versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
+          1.5.5.1 = fetch a local branch located in ~./Projects/opencart/opencart-VERSION  
+          you can change the location of opencart base in /etc/opencart-install.conf
 		  
 extensions and modules: these files follow a common naming convention see source for more info
 
@@ -76,7 +76,7 @@ extensions and modules: these files follow a common naming convention see source
 -----
 
  Connect to production with ssh
- install opencart online (see Usage)
+ install opencart online
  setup git-ftp  
 
 		git config git-ftp.production.url <production_path>
@@ -96,7 +96,7 @@ extensions and modules: these files follow a common naming convention see source
 
 		git log --pretty=oneline | awk 'NR==1{print $1}' | clip
 
-	if ssh keys are installed in local machine, you can use scp to upload .git-ftp.log with one command (change user & project_name):  
+ if ssh keys are installed in local machine, you can use scp to upload .git-ftp.log with one command (change user & project_name):  
 
 		git log --pretty=oneline | awk 'NR==1{print $1}' >> .git-ftp.log && scp .git-ftp.log root@cheetasoft.gr:/home/<user>/public_html/<project_name> && rm .git-ftp.log
 
