@@ -2,18 +2,7 @@
 OIFS=$IFS;
 IFS=",";
 
-
 source /etc/opencart-installer.conf
-
-
-# An error exit function
-
-function error_exit
-{
-	echo "$1" 1>&2
-	exit 1
-}
-
 
 while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
     case $opt in
