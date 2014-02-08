@@ -2,6 +2,7 @@
 OIFS=$IFS;
 IFS=",";
 
+
 source /etc/opencart-installer.conf
 
 function download()
@@ -11,6 +12,14 @@ function download()
         sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
     echo -ne "\b\b\b\b"
     echo " DONE"
+}
+
+# An error exit function
+
+function error_exit
+{
+	echo "$1" 1>&2
+	exit 1
 }
 
 
@@ -73,6 +82,7 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:?" opt; do
     esac
 done
 
+OPENCART_PATH=$OPENCART_PATH/opencart
 templateArray=($TEMPLATE);
 extensionArray=($EXTENSION);
 
@@ -96,6 +106,7 @@ then
     echo "using default version: $CURRENT_VERSION" >&2
 else
     echo "using version: $VERSION" >&2
+OPENCART_PATH=$OPENCART_PATH/opencart-$VERSION
 fi
 
 
@@ -188,7 +199,9 @@ if [ -f $TEMP_DIR/upload/index.php ];
 then
 OPENCART_PATH=$TEMP_DIR/upload
 fi 
+
 elif [ $VERSION == upstream ]
+then
 # purge tmp folder
 rm -drf $TEMP_DIR/upload
 
@@ -200,8 +213,10 @@ git clone $UPSTREAM
 if [ -f opencart/upload/index.php ];
 then
 OPENCART_PATH=$DESTINATION_PATH/opencart/upload
-fi 
+fi
+
 elif [ $VERSION == origin ]
+then
 # purge tmp folder
 rm -drf $TEMP_DIR/upload
 
@@ -342,3 +357,4 @@ git init
 git add .
 git commit -m "initial commit"
 
+exit 0
