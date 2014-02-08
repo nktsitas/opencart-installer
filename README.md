@@ -52,7 +52,7 @@ Windows Install
 8. Copy **install\_opencart** into *&lt;cygwin_folder&gt;*/usr/local/bin
 9. Run:  
 	
-	  ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart-install
+   	        ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart-install
 
 Usage
 -----
@@ -61,7 +61,7 @@ Usage
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-	  opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
+	        opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
 	  
 versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
 
