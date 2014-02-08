@@ -5,14 +5,6 @@ IFS=",";
 
 source /etc/opencart-installer.conf
 
-function download()
-{
-    echo -n "    "
-    wget --progress=dot $CURRENT_VERSION_URL -O $TEMP_DIR/opencart.zip | grep --line-buffered "%" | \
-        sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
-    echo -ne "\b\b\b\b"
-    echo " DONE"
-}
 
 # An error exit function
 
@@ -23,7 +15,7 @@ function error_exit
 }
 
 
-while getopts ":p:u:d:t:v:m:n:c:h:e:?" opt; do
+while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
@@ -63,6 +55,10 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:?" opt; do
             PROJECT_NAME=$OPTARG
             echo "Project Name given: $PROJECT_NAME" >&2
             ;;
+        l)
+            VERBOSE=true
+            echo "Project Name given: $PROJECT_NAME" >&2
+            ;;
         c)
             TRUNCATE=true
             echo "will truncate the database"
@@ -76,7 +72,7 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:?" opt; do
             echo ""
             echo "Opencart Installer by Jason Clark <mithereal@gmail.com> and Nikos Tsitas <nktsitas@gmail.com>" 
             echo ""
-            echo "Usage: opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url>" 
+            echo "Usage: opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -l = verbose" 
             exit 1
             ;;
     esac
@@ -103,7 +99,7 @@ fi
 if [ -z "$VERSION" ]
 then
     VERSION="current"
-    echo "using default version: $CURRENT_VERSION" >&2
+    echo "using version: $STABLE_VERSION" >&2
 else
     echo "using version: $VERSION" >&2
 OPENCART_PATH=$OPENCART_PATH/opencart-$VERSION
@@ -184,54 +180,51 @@ OS=`uname`
 if [ $VERSION == stable ]
 then
 # purge tmp folder
-rm -drf $TEMP_DIR/upload
+rm -drf $TEMP_DIR/opencart
 
-# download opencart
-echo -n "Downloading $CURRENT_VERSION_URL:"
-download $CURRENT_VERSION_URL
-# extract opencart
-unzip $TEMP_DIR/opencart.zip "opencart-$CURRENT_VERSION/upload/*" -d $TEMP_DIR
-mv $TEMP_DIR/opencart-$CURRENT_VERSION/upload $TEMP_DIR/.
-rm -drf $TEMP_DIR/opencart-$CURRENT_VERSION
-rm  $TEMP_DIR/opencart.zip
-# check if opencart is in tmp folder
-if [ -f $TEMP_DIR/upload/index.php ];
+# clone opencart
+cd $TEMP_DIR
+git clone -b v$STABLE_VERSION $STABLE
+
+# check if opencart is in folder
+if [ -f opencart/upload/index.php ];
 then
-OPENCART_PATH=$TEMP_DIR/upload
+OPENCART_PATH=$TEMP_DIR/opencart/upload
 fi 
 
 elif [ $VERSION == upstream ]
 then
 # purge tmp folder
-rm -drf $TEMP_DIR/upload
+rm -drf $TEMP_DIR/opencart
 
 # clone opencart
-cd $DESTINATION_PATH
+cd $TEMP_DIR
 git clone $UPSTREAM
 
 # check if opencart is in folder
 if [ -f opencart/upload/index.php ];
 then
-OPENCART_PATH=$DESTINATION_PATH/opencart/upload
+OPENCART_PATH=$TEMP_DIR/opencart/upload
 fi
 
 elif [ $VERSION == origin ]
 then
 # purge tmp folder
-rm -drf $TEMP_DIR/upload
+rm -drf $TEMP_DIR/opencart
 
 # clone opencart
-cd $DESTINATION_PATH
+cd $TEMP_DIR
 git clone $ORIGIN
 
 # check if opencart is in folder
 if [ -f opencart/upload/index.php ];
 then
-OPENCART_PATH=$DESTINATION_PATH/opencart/upload
+OPENCART_PATH=$TEMP_DIR/opencart/upload
 fi 
 fi
 
 # copy opencart
+mkdir $DESTINATION_PATH
 cp -r $OPENCART_PATH/* $DESTINATION_PATH
 cp $OPENCART_PATH/.htaccess.txt $DESTINATION_PATH/.htaccess
 cp $OPENCART_PATH/.gitignore $DESTINATION_PATH/.gitignore
@@ -242,19 +235,36 @@ mv $DESTINATION_PATH/admin/config-dist.php $DESTINATION_PATH/admin/config.php
 
 # change permissions
 if [[ "$OS" == 'Linux' ]]; then
+if [[ -z "$VERBOSE" ]]; then
+
     # change permissions
-    chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH
-    chmod -R 755 $DESTINATION_PATH
+    chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH > /dev/null 2>&1
+    chmod -R 755 $DESTINATION_PATH > /dev/null 2>&1
 
-    chmod 0777 $DESTINATION_PATH/config.php
-    chmod 0777 $DESTINATION_PATH/admin/config.php
+    chmod 0777 $DESTINATION_PATH/config.php > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/admin/config.php > /dev/null 2>&1
 
-    chmod 0777 $DESTINATION_PATH/system/cache/
+    chmod 0777 $DESTINATION_PATH/system/cache/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/system/logs/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/image/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/image/cache/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/image/data/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/download/ > /dev/null 2>&1
+else
+    # change permissions
+    chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH 
+    chmod -R 755 $DESTINATION_PATH 
+
+    chmod 0777 $DESTINATION_PATH/config.php 
+    chmod 0777 $DESTINATION_PATH/admin/config.php 
+
+    chmod 0777 $DESTINATION_PATH/system/cache/ 
     chmod 0777 $DESTINATION_PATH/system/logs/
-    chmod 0777 $DESTINATION_PATH/image/
-    chmod 0777 $DESTINATION_PATH/image/cache/
-    chmod 0777 $DESTINATION_PATH/image/data/
-    chmod 0777 $DESTINATION_PATH/download/
+    chmod 0777 $DESTINATION_PATH/image/ 
+    chmod 0777 $DESTINATION_PATH/image/cache/ 
+    chmod 0777 $DESTINATION_PATH/image/data/ 
+    chmod 0777 $DESTINATION_PATH/download/ 
+fi
 else
     icacls $DESTINATION_PATH /grant:r Everyone:RX /t
 
