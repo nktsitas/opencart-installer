@@ -61,7 +61,7 @@ Usage
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url>
+		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3>
 
 3. Base opencart should be installed and accessible through __&lt;domain\_url&gt;__ & __&lt;domain\_url&gt;/admin__ with admin:admin123
 4. Database &lt;user\_name&gt;\_&lt;database\_name&gt; should have been created in mysql server specified inside install_opencart.sh
