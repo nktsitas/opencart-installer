@@ -37,17 +37,17 @@ Windows Install
 		<cygwin_folder>/usr/src/opencart/opencart-1.5.6.1/upload/…
 		
 		
-6. Copy paste base folder of working templates  
+6. Copy the working templates into a folder structure like below in this case stable is the branch this will change with release ex u could target 1.5.5.1 by adding a 1.5.5.1 dir under the theme name
 
-		<cygwin_folder>/home/username/Projects/opencart/theme/1.5.5.1/Journal/….
+		<cygwin_folder>/home/username/Projects/opencart/theme/Journal/stable/upload….
                 and optionally
-		<cygwin_folder>/usr/src/opencart/theme/1.5.5.1/Journal/….
+		<cygwin_folder>/usr/src/opencart/theme/Journal/stable/upload….
 
 6. Copy paste base folder of working extensions  
 
-		<cygwin_folder>/home/username/Projects/opencart/extension/1.5.5.1/Journal/….
+		<cygwin_folder>/home/username/Projects/opencart/extension/extension-name/stable/upload….
                 and optionally
-		<cygwin_folder>/usr/src/opencart/extension/1.5.5.1/Journal/….
+		<cygwin_folder>/usr/src/opencart/extension/extension-name/stable/upload….
 
 8. Copy **install\_opencart** into *&lt;cygwin_folder&gt;*/usr/local/bin
 9. Run:  
@@ -63,8 +63,10 @@ Usage
 
 	  opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
 versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
-          1.5.5.1 = fetch a local branch located in ~./Projects/opencart/opencart-VERSION  
-          you can change the location of opencart base in /etc/opencart-install.conf
+
+1.5.5.1 = fetch a local branch located in ~./Projects/opencart/opencart-VERSION  
+
+you can change the location of opencart base in /etc/opencart-install.conf
 		  
 extensions and modules: these files follow a common naming convention see source for more info
 
