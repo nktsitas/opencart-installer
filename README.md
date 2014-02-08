@@ -11,7 +11,10 @@ Can be used under linux, or windows with cygwin
 
 Can also pre-install templates if specified
 
-
+Ubuntu Install
+----------
+ubuntu version available as a ppa: https://launchpad.net/~mithereal/+archive/opencart-installer
+		sudo add-apt-repository ppa:mithereal/opencart-installer
 
 Windows Install
 ----------
