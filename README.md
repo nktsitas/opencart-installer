@@ -12,13 +12,8 @@ Can be used under linux, or windows with cygwin
 Can also pre-install templates if specified
 
 
-Known Issues
-------------
 
-* Only Journal template supported so far
-
-
-Install
+Windows Install
 ----------
 
 1. run cygwin setup and add mysql
@@ -29,46 +24,63 @@ Install
 		host=127.0.0.1 
 		password= 
 
-3. Find your cygwin folder (C:/cygwin , C:/cygwin64, …)
-4. go to *&lt;cygwin_folder&gt;*/var/local (create folder local if doesn’t exist)
-5. copy paste opencart versions in there so you end up with  
+3. edit /etc/opencart-install.conf
+4. Find your cygwin folder (C:/cygwin , C:/cygwin64, …)
+5. create folder *&lt;cygwin_folder&gt;*/home/username/Projects/opencart/ if doesn’t exist
+  alternatively create folder  *&lt;cygwin_folder&gt;*/home/username/Projects/opencart/ if doesn’t exist
+6. copy paste opencart versions u work with in there so you end up with   
 
-		<cygwin_folder>/var/local/opencart-1.5.5.1/upload/…
-		<cygwin_folder>/var/local/opencart-1.5.6.1/upload/…
-		.
-		.
-6. Copy paste base folder of working templates  
+		<cygwin_folder>/home/username/Projects/opencart/opencart-1.5.5.1/upload/…
+		<cygwin_folder>/home/username/Projects/opencart/opencart-1.5.6.1/upload/…
+                 and optionally
+                <cygwin_folder>/usr/src/opencart/opencart-1.5.5.1/upload/…
+		<cygwin_folder>/usr/src/opencart/opencart-1.5.6.1/upload/…
+		
+		
+6. Copy the working templates into a folder structure like below in this case stable is the branch this will change with release ex u could target 1.5.5.1 by adding a 1.5.5.1 dir under the theme name
 
-		<cygwin_folder>/var/local/Journal/Journal_v.1.2.0/….
+		<cygwin_folder>/home/username/Projects/opencart/theme/Journal/stable/upload….
+                and optionally
+		<cygwin_folder>/usr/src/opencart/theme/Journal/stable/upload….
 
-7. Copy **install\_opencart.sh** into *&lt;cygwin_folder&gt;*/usr/local/bin
-8. Run:  
+6. Copy paste base folder of working extensions  
 
-		ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart
+		<cygwin_folder>/home/username/Projects/opencart/extension/extension-name/stable/upload….
+                and optionally
+		<cygwin_folder>/usr/src/opencart/extension/extension-name/stable/upload….
+
+8. Copy **install\_opencart** into *&lt;cygwin_folder&gt;*/usr/local/bin
+9. Run:  
+	
+   	        ln -s /usr/local/bin/install_opencart.sh /usr/local/bin/opencart-install
 
 Usage
 -----
+ -h sets the hostname of the store, ie cheetasoft.gr 
+
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-		opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url>
+	        opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
+	  
+versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
+
+1.5.5.1 = fetch a local branch located in ~./Projects/opencart/opencart-VERSION  
+
+you can change the location of opencart base in /etc/opencart-install.conf
+		  
+extensions and modules: these files follow a common naming convention see source for more info
 
 3. Base opencart should be installed and accessible through __&lt;domain\_url&gt;__ & __&lt;domain\_url&gt;/admin__ with admin:admin123
 4. Database &lt;user\_name&gt;\_&lt;database\_name&gt; should have been created in mysql server specified inside install_opencart.sh
 
-Install/Sync Online-Production (git & git-ftp)
+
+5. Sync Online-Production (git & git-ftp)
 -----
-1. navigate to project base folder.  
-2. initialize git & submit first commit
 
-		cd <install_folder>
-		git init
-		git add .
-		git commit -m 'first commit'
-
-3. Connect to production with ssh
-4. install opencart online (see Usage)
-5. setup git-ftp  
+ Connect to production with ssh
+ install opencart online
+ setup git-ftp  
 
 		git config git-ftp.production.url <production_path>
 		git config git-ftp.production.user <user>
@@ -83,13 +95,12 @@ Install/Sync Online-Production (git & git-ftp)
 		git config git-ftp.production.password <password>
 		git config git-ftp.production.key ~/.ssh/id_rsa
 
-6. create file .git-ftp.log and write inside the commit hash from local folder (enter following command to add it to clipboard)
+ create file .git-ftp.log and write inside the commit hash from local folder (enter following command to add it to clipboard)
 
 		git log --pretty=oneline | awk 'NR==1{print $1}' | clip
 
-	if ssh keys are installed in local machine, you can use scp to upload .git-ftp.log with one command (change user & project_name):  
+ if ssh keys are installed in local machine, you can use scp to upload .git-ftp.log with one command (change user & project_name):  
 
 		git log --pretty=oneline | awk 'NR==1{print $1}' >> .git-ftp.log && scp .git-ftp.log root@cheetasoft.gr:/home/<user>/public_html/<project_name> && rm .git-ftp.log
 
 
-[install]: https://docs.google.com/document/d/14GHVib5uDEse9umzujvx029XewbnuzGKrqpfv-TAwoM/edit

@@ -1,0 +1,75 @@
+/*
+	Aditional styles for Journal III skin
+*/
+
+
+
+#journal-header #menu > ul > li > a{
+	line-height: 3.4;
+}
+
+.product-info .description span, 
+.sitemap-info ul > li > ul li a{
+	color:#82a6af;
+}
+
+header, header .top-header{
+	box-shadow: none;
+}
+
+#menu > ul > li:first-child + li{
+	border-left: none;
+}
+
+a.button, input.button{
+	border-radius: 6px;
+}
+
+.product-info .cart input.button{
+	border-radius: 0;
+}
+
+a.button {
+	line-height: 2.7;
+}
+
+/*Rounded Corners*/
+
+.home-container{
+	border-top-left-radius: 30px;
+	border-top-right-radius: 30px;
+}
+
+.home-header #logo{
+	border-bottom-left-radius: 20px;
+}
+
+.home-header .menu, .home-header #menu > ul > li:last-child{
+	border-bottom-right-radius: 20px;
+}
+
+.header_ii.home-header #logo{
+	border-bottom-left-radius: 0;
+}
+
+.header_ii.home-header .menu{
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+}
+
+
+
+
+@media only screen and (max-width: 980px){
+	.responsive .home-header #logo{
+		border-bottom-left-radius: 0px;
+	}
+
+	.responsive .home-header .menu{
+		border-bottom-left-radius: 20px;
+	}
+
+}
+
+
+

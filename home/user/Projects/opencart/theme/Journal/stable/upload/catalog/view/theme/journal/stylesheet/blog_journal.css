@@ -1,0 +1,204 @@
+/* 
+  Journal - Premium & Responsive OpenCart Theme
+  Version 1.2.0
+  Copyright (c) 2013 Digital Atelier 
+  http://journal.digital-atelier.com/
+  --
+  BLOG MANAGER CUSTOM STYLES
+  Copyright (c) 2013 Echo Themes
+  http://www.echothemes.com/extensions/blog-manager.html
+
+*/
+
+
+#column-right .blogTags .box-content{
+  padding: 10px;
+  padding-bottom: 8px;
+}
+
+.blogTags a {
+  padding: 2px 4px 3px 4px;
+  color: #222;
+  border-radius:7px;
+  font-size: 13px !important;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.blogTags a:hover{
+  color:white;
+}
+
+.boxPlain .box-content{
+  border-top: 1px solid;
+}
+
+#column-right .blogArchives li,
+#column-right .blogCategories > ul > li, 
+.articleBottom li, #blogCategory li, 
+.blogSearch .plain li, 
+.blogSearch .plain{
+  background:none;
+  padding-left: 0;
+}
+
+.blogSearch .plain li{
+  padding: 5px 0;
+}
+ 
+#column-right .blogArchives ul ul > li > a{
+  padding-left: 20px;
+}
+
+#column-right .blogArchives ul ul > li > ul > li > a{
+  padding-left: 40px;
+}
+
+#column-right .blogArchives ul ul{
+  margin:0;
+  text-decoration: none;
+}
+
+#column-right .box-content ul li ul{
+  padding-top: 0;
+}
+
+#column-right .blogArchives ul ul > li > a:hover{
+  color: #EA2E49;
+}
+
+.blogModule .image img{
+  font-size: 13px;
+  padding: 0;
+  border:none;
+  background-color: transparent;
+}
+
+.blogModule .title{
+  padding:6px 0 2px 0;
+}
+
+.recentComments li{
+  font-size: 14px;
+  text-indent: 4px;
+}
+
+.recentComments li i{
+  font-size: 12px;
+}
+
+.articleContent p{
+  margin-bottom: 5px;
+}
+
+.articleContent .readMore{
+  float:right;
+}
+
+.blogCatArticles{
+  margin-bottom: 40px;
+}
+
+#articleComments{
+  border:none;
+}
+
+#commentRespond textarea{
+  width: 99%;
+}
+
+.articleBottom #productRelated{
+  margin-right: -20px;
+}
+
+#blogCatArticles .articleHeader h3{
+  border-bottom: 1px solid;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.articleContent .readMore span.comment a{
+  display: inline-block;
+  background:url(../images/bubble.png) no-repeat left;
+  padding-left: 24px;
+  min-height: 14px;
+}
+
+.articleContent .readMore span.more a{
+  display: inline-block;
+  font-weight: bold;
+  min-height: 14px;
+}
+
+.articleContent .readMore span a{
+  color:#5C8BA6;
+}
+
+.articleBottom h4, #blogCategory h4{
+  border-top: 1px solid;
+  padding-top: 15px;
+  margin: 20px 0;
+}
+
+#productRelated h4, #blogSearch h2{
+  border:none;
+  padding:11px;
+  height: 40px;
+}
+
+#blogArticle .articleContent{
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  padding-top: 14px;
+  padding-bottom: 8px;
+}
+
+.articleBottom ul, #blogCategory ul{
+  margin: 0;
+}
+
+.articleHeader span, .articleHeader span a{
+  font-size: 12px;
+  color: #888;
+}
+
+.blogModule .recentComments .image{
+  border:none;
+}
+
+.articleBottom{
+  clear:both;
+}
+.blogSearch a:hover{
+  text-decoration: none;
+}
+
+.commentList .even, #comments .commentEmpty{
+  border:none;
+}
+
+#tab-related-article li{
+  width: 33%;
+  min-height: 100px;
+}
+
+#tab-related-article .blogTitle{
+  font-weight: bold;
+  margin-left: 85px;
+}
+
+.commentList li .name a{
+  font-weight: bold;
+}
+
+.commentList .odd{
+  border:none;
+  background: transparent;
+}
+
+#commentRespond .success, #commentRespond .warning, #commentRespond .attention, #commentRespond .information{
+  position: relative;
+
+}
+
+

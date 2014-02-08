@@ -1,0 +1,182 @@
+/******************************
+HEADER TYPE 2
+*******************************/
+
+#logo{
+  height: 80px;
+  width: 220px;
+}
+
+#journal-header .welcome{
+  width: 480px;
+}
+
+.top-links{
+  width: 480px
+}
+
+#journal-header .menu{
+  width: 980px;
+}
+
+.safari #journal-header .welcome, .safari .top-links{
+  width: 478px;
+}
+
+.safari #journal-header .welcome, .safari #search{
+  height:39px;
+}
+
+@media only screen and (max-width: 980px) {
+    #journal-header .top-links, #journal-header .welcome{
+      width: 549px;
+    }
+    .safari #journal-header .welcome, .safari #journal-header .top-links{
+      width: 547px;
+    }
+    #journal-header .cart, #cart, #cart .heading a, #search{
+      width: 274px;
+    }
+
+    #journal-header .cart{
+      width: 275px;
+    }
+
+
+    #search input{
+      width: 234px;
+      min-width: 234px;
+    }
+
+    #search .button-search{
+      border-left: none;
+    }
+
+    #logo{
+      height: 120px;
+    }
+}
+
+@media only screen and (max-width: 760px) {
+    header,
+    #journal-header {
+      height: 280px;
+      width: 480px;
+    }
+    #logo {
+      width: 480px;
+      height: 80px;
+      border:none !important;
+    }
+    #journal-header .top-links, #journal-header .welcome {
+      width: 480px !important;
+      border: none;
+    }
+
+    #journal-header .cart, #search{
+      width: 480px;
+    }
+    .safari #journal-header .cart, .safari #cart, .safari #cart .heading a, .safari #search{
+      width: 480px;
+    }
+
+    #menu > ul > li ul + ul{
+      border: none;
+    }
+}
+
+@media only screen and (max-width: 470px) {
+  header, #journal-header {
+    height: 270px;
+    width: 320px;
+  }
+  #logo {
+    width: 320px;
+    height: 80px;
+  }
+  #journal-header .top-links,
+  #journal-header .welcome {
+    width: 320px !important;
+  }
+
+  #journal-header .top-links {
+    height: 30px;
+  }
+  #journal-header .top-links a {
+    min-width: 40px;
+    font-size: 8px !important;
+    height: 30px;
+  }
+  #journal-header .top-links a:last-child {
+    border-right: none;
+  }
+  #journal-header .welcome {
+    height: 40px;
+  }
+  #journal-header .welcome form {
+    display: table;
+    float: left;
+    width: 50%;
+    height: 20px;
+    border-bottom: none;
+    padding-top: 2px;
+  }
+  #journal-header .welcome form #currency a {
+    margin: 0 3px;
+  }
+  #journal-header .welcome form div {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  #journal-header .welcome #welcome {
+    display: block;
+    text-align: center;
+    font-size: 10px !important;
+    padding: 0;
+    line-height: 1.7;
+    height: 20px;
+    float: left;
+    width: 100%;
+  }
+  #journal-header .welcome #welcome a {
+    font-size: 10px;
+  }
+  #journal-header .cart {
+    width: 320px;
+    border: none;
+  }
+  #journal-header .cart #cart {
+    width: 320px;
+  }
+  #journal-header .cart #cart .heading a {
+    width: 320px;
+    vertical-align: middle;
+  }
+  #journal-header .cart #cart .heading a span {
+    font-size: 15px;
+    padding-right: 45px;
+  }
+  #cart .content,
+  #cart.active .content {
+    min-width: 320px;
+    width: 320px;
+    max-width: 320px;
+    left: 0;
+    box-shadow: none;
+  }
+  #search {
+    max-width: 320px;
+    width: 320px;
+  }
+  #search input {
+    width: 315px;
+    min-width: 135px;
+  }
+  #search .button-search {
+    border-left: none;
+  }
+
+  .safari #journal-header .cart, .safari #cart, .safari #cart .heading a, .safari #search{
+    width: 320px;
+  }
+}

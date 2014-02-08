@@ -1,9 +1,28 @@
 #!/bin/bash
-while getopts ":p:u:d:t:v:m:n:f" opt; do
+OIFS=$IFS;
+IFS=",";
+
+source /etc/opencart-installer.conf
+
+function download()
+{
+    echo -n "    "
+    wget --progress=dot $CURRENT_VERSION_URL -O $TEMP_DIR/opencart.zip | grep --line-buffered "%" | \
+        sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}'
+    echo -ne "\b\b\b\b"
+    echo " DONE"
+}
+
+
+while getopts ":p:u:d:t:v:m:n:c:h:e:?" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
             # echo "-p was triggered, Parameter: $DESTINATION_PATH" >&2
+            ;;
+        e)
+            EXTENSION=$OPTARG
+            # echo "-e was triggered, Parameter: $EXTENSION" >&2
             ;;
         u)
             FOR_USER=$OPTARG
@@ -11,71 +30,74 @@ while getopts ":p:u:d:t:v:m:n:f" opt; do
             ;;
         d)
             DATABASE=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-d was triggered, Parameter: $DATABASE" >&2
             ;;
         t)
             TEMPLATE=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-t was triggered, Parameter: $TEMPLATE" >&2
             ;;
         v)
             VERSION=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-v was triggered, Parameter: $VERSION" >&2
             ;;
+           
+        h)
+             HOST=$OPTARG
+            # echo "-h was triggered, Parameter: $HOST" >&2
+            ;;
+
         m)
             DOMAIN=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
+            # echo "-m was triggered, Parameter: $DOMAIN" >&2
             ;;
         n)
             PROJECT_NAME=$OPTARG
             echo "Project Name given: $PROJECT_NAME" >&2
             ;;
-        f)
+        c)
             TRUNCATE=true
-            echo "will truncate database"
+            echo "will truncate the database"
             ;;
-        \?)
-            echo "Invalid option: -$OPTARG" >&2
-            exit 1
-            ;;
+       
         :)
             echo "Option -$OPTARG requires an argument." >&2
+            exit 1
+            ;;
+        ?)
+            echo ""
+            echo "Opencart Installer by Jason Clark <mithereal@gmail.com> and Nikos Tsitas <nktsitas@gmail.com>" 
+            echo ""
+            echo "Usage: opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url>" 
             exit 1
             ;;
     esac
 done
 
-if [ -z "$VERSION" ]
-then
-    VERSION="1.5.5.1"
-    echo "using default version: $VERSION" >&2
-else
-    case $VERSION in
-        "1.5.5.1") 
-            echo "using version: $VERSION" >&2
-            ;;
-        "1.5.6.1") 
-            echo "using version: $VERSION" >&2
-            ;;
-        *)
-            echo "unsupported opencart version ($VERSION). Aborting" >&2
-            exit 1
-            ;;
-    esac
+templateArray=($TEMPLATE);
+extensionArray=($EXTENSION);
+
+echo ""
+echo "Opencart Installer"
+echo ""
+read -p "Enter the hostname of the database: " MYSQL_HOST
+read -p "Enter the username for the database: " MYSQL_USERNAME
+printf "Enter the password for the database: "
+read -s  MYSQL_PASS
+
+
+if [ ! -d "$TEMP_DIR" ]; then
+mkdir $TEMP_DIR;
 fi
 
-# VERSION=1.5.5.1
-OPENCART_PATH=/var/local/opencart-$VERSION/upload
-TRUNCATE_FILE=/usr/local/bin/truncate_opencart.sql
-MYSQL_HOST=localhost
-MYSQL_USERNAME=root
-# MYSQL_PASS=lt_mysql123ff9058
-MYSQL_PASS=''
+# -v <version> (version to install)
+if [ -z "$VERSION" ]
+then
+    VERSION="current"
+    echo "using default version: $CURRENT_VERSION" >&2
+else
+    echo "using version: $VERSION" >&2
+fi
 
-# Journal for opencart v1.5.5.1 
-TEMPLATE_PATH_JOURNAL_v1_5_5_1=/var/local/Journal/Journal_v.1.2.0/OpenCart_v.1.5.5.1
-JOURNAL_IMAGE_SETUP_SQL=/var/local/Journal/Journal_v.1.2.0/OpenCart_v.1.5.5.1/opencart_image_journal.sql
-JOURNAL_MODULES_SETUP_SQL=/var/local/Journal/Journal_v.1.2.0/OpenCart_v.1.5.5.1/opencart_journal_modules.sql
-# -----------------------------
 
 # -p <path> (current folder if none given)
 if [ -z "$DESTINATION_PATH" ]
@@ -101,15 +123,24 @@ else
     echo "user: $FOR_USER" >&2
 fi
 
-# -m <domain> (http://cheetasoft.gr/<path> if none given)
+# -h <hostname> (http://cheetasoft.gr/<domain> if none given)
+if [ -z "$HOST" ]
+then
+  HOST="cheetasoft.gr"
+echo "no hostname given, setting default: $HOST" >&2
+else
+    echo "host: $HOST" >&2
+fi
+
+# -m <domain> (http://<hostname>/mystore if none given)
 if [ -z "$DOMAIN" ]
 then
     if [ -z "$PROJECT_NAME" ]
     then
-        DOMAIN="http://cheetasoft.gr/mystore/"
+        DOMAIN="http://$HOST/mystore/"
         echo "no domain/project name given, setting default: $DOMAIN" >&2
     else
-        DOMAIN="http://cheetasoft.gr/$PROJECT_NAME/"
+        DOMAIN="http://$HOST/$PROJECT_NAME/"
         echo "no domain given, setting with project name: $DOMAIN" >&2
     fi
 else
@@ -139,13 +170,62 @@ fi
 # detect Operating System
 OS=`uname`
 
+if [ $VERSION == stable ]
+then
+# purge tmp folder
+rm -drf $TEMP_DIR/upload
+
+# download opencart
+echo -n "Downloading $CURRENT_VERSION_URL:"
+download $CURRENT_VERSION_URL
+# extract opencart
+unzip $TEMP_DIR/opencart.zip "opencart-$CURRENT_VERSION/upload/*" -d $TEMP_DIR
+mv $TEMP_DIR/opencart-$CURRENT_VERSION/upload $TEMP_DIR/.
+rm -drf $TEMP_DIR/opencart-$CURRENT_VERSION
+rm  $TEMP_DIR/opencart.zip
+# check if opencart is in tmp folder
+if [ -f $TEMP_DIR/upload/index.php ];
+then
+OPENCART_PATH=$TEMP_DIR/upload
+fi 
+elif [ $VERSION == upstream ]
+# purge tmp folder
+rm -drf $TEMP_DIR/upload
+
+# clone opencart
+cd $DESTINATION_PATH
+git clone $UPSTREAM
+
+# check if opencart is in folder
+if [ -f opencart/upload/index.php ];
+then
+OPENCART_PATH=$DESTINATION_PATH/opencart/upload
+fi 
+elif [ $VERSION == origin ]
+# purge tmp folder
+rm -drf $TEMP_DIR/upload
+
+# clone opencart
+cd $DESTINATION_PATH
+git clone $ORIGIN
+
+# check if opencart is in folder
+if [ -f opencart/upload/index.php ];
+then
+OPENCART_PATH=$DESTINATION_PATH/opencart/upload
+fi 
+fi
+
 # copy opencart
 cp -r $OPENCART_PATH/* $DESTINATION_PATH
+cp $OPENCART_PATH/.htaccess.txt $DESTINATION_PATH/.htaccess
+cp $OPENCART_PATH/.gitignore $DESTINATION_PATH/.gitignore
 
-# rename config files and change permissions
+# rename config files 
 mv $DESTINATION_PATH/config-dist.php $DESTINATION_PATH/config.php
 mv $DESTINATION_PATH/admin/config-dist.php $DESTINATION_PATH/admin/config.php
 
+# change permissions
 if [[ "$OS" == 'Linux' ]]; then
     # change permissions
     chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH
@@ -190,38 +270,18 @@ else
     exit 1
 fi
 
-# Wait for user to complete install before continuing
-#read -p "Press [Enter] when OpenCart Installation Step 3 is finished."
 
-# Check if Step 3 is indeed finished.
-#echo "select * from oc_address" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS $DATABASE
-#if [ $? -ne 0 ]; then
- #   echo "Step 3 not yet completed. Aborting."
- #   rm -rf $DESTINATION_PATH/
- #   echo "drop database $DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS
- #   exit 1
-#fi
-
-echo "Installing opencart basic..."
+echo "Installing opencart $VERSION..."
 if [[ "$MYSQL_PASS" == '' ]]; then
-    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
+    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password "" --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 else
     php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 fi
 
 
-# user can choose to truncate default opencart database (remove all products/categories/manufacturers)
-# while true; do
-#     read -p "Do you wish to truncate the database? (y/n): " yn
-#     case $yn in
-#         [Yy]* ) cat $TRUNCATE_FILE | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS $DATABASE; break;;
-#         [Nn]* ) break;;
-#         * ) echo "Please answer yes or no.";;
-#     esac
-# done
 
 if $TRUNCATE; then
-    echo "Truncating base opencart database..."
+    echo "Truncating opencart $VERSION database..."
     if [[ "$MYSQL_PASS" == '' ]]; then
         cat $TRUNCATE_FILE | mysql -u $MYSQL_USERNAME $DATABASE
     else
@@ -229,25 +289,21 @@ if $TRUNCATE; then
     fi
 fi
 
-# read -p "Press [Enter] key to remove install folder."
-
 # remove install folder
 rm -rf $DESTINATION_PATH/install/
 
 # install template 
-# supported templates:
-# 1. Journal v1.2.0 for opencart v1.5.5.1
 if [ -z "$TEMPLATE" ]
 then
     echo "No template given. Using default" >&2
-    exit 1
 else
-    echo "Installing template: $TEMPLATE" >&2
+for ((i=0; i<${#templateArray[@]}; ++i));
+do
+    echo "Installing template: $templateArray[$i]" >&2
 
-    # journal
-    if [ $TEMPLATE = "journal" ]; then
-        cp -r $TEMPLATE_PATH_JOURNAL_v1_5_5_1/* $DESTINATION_PATH/
+        cp -r $THEME_DIR/$templateArray[$i]/$VERSION/upload/* $DESTINATION_PATH/
         chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH
+
         if [[ "$MYSQL_PASS" == '' ]]; then
             cat $JOURNAL_IMAGE_SETUP_SQL | mysql -u $MYSQL_USERNAME $DATABASE
             cat $JOURNAL_MODULES_SETUP_SQL | mysql -u $MYSQL_USERNAME $DATABASE
@@ -255,9 +311,34 @@ else
             cat $JOURNAL_IMAGE_SETUP_SQL | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS $DATABASE
             cat $JOURNAL_MODULES_SETUP_SQL | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS $DATABASE
         fi
-    else
-        echo "Template $TEMPLATE is not supported. Using default." >&2
-    fi
+done
 fi
 
+# install extension 
+if [ "$EXTENSION" ]
+then
+for ((i=0; i<${#extensionArray[@]}; ++i));
+do
+    echo "Installing template: $extensionArray[$i]" >&2
+
+        cp -r $EXTENSION_DIR/$extensionArray[$i]/$VERSION/upload/* $DESTINATION_PATH/
+        chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH
+
+        if [[ "$MYSQL_PASS" == '' ]]; then
+            cat $JOURNAL_IMAGE_SETUP_SQL | mysql -u $MYSQL_USERNAME $DATABASE
+            cat $JOURNAL_MODULES_SETUP_SQL | mysql -u $MYSQL_USERNAME $DATABASE
+        else
+            cat $JOURNAL_IMAGE_SETUP_SQL | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS $DATABASE
+            cat $JOURNAL_MODULES_SETUP_SQL | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS $DATABASE
+        fi
+done
+fi
+
+IFS=$OIFS;
+
+#set up git repo
+cd $DESTINATION_PATH
+git init
+git add .
+git commit -m "initial commit"
 
