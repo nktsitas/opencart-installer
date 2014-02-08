@@ -62,6 +62,7 @@ Usage
 2. run:  
 
 	  opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
+	  
 versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
 
 1.5.5.1 = fetch a local branch located in ~./Projects/opencart/opencart-VERSION  
