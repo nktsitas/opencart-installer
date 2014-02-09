@@ -10,12 +10,15 @@ Summary
 Can be used under linux, or windows with cygwin
 
 Can also pre-install templates if specified
+can also be run as a standalone w/ installing opencart-installer-s
 
 Ubuntu Install
 ----------
 ubuntu version available as a ppa: https://launchpad.net/~mithereal/+archive/opencart-installer
 
 		sudo add-apt-repository ppa:mithereal/opencart-installer
+      or
+./install
 
 Windows Install
 ----------
