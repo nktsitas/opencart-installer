@@ -166,7 +166,7 @@ fi
 # detect Operating System
 OS=`uname`
 
-if [ $VERSION == stable ]
+if [ $VERSION == 'stable' ]
 then
 # purge tmp folder
 rm -drf $TEMP_DIR/opencart
