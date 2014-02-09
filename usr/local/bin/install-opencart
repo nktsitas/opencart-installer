@@ -89,7 +89,7 @@ templateArray=($TEMPLATE);
 extensionArray=($EXTENSION);
 
 echo ""
-echo "Opencart Installer"
+echo "Preparing to install Opencart..."
 echo ""
 read -p "Enter the hostname of the database: " MYSQL_HOST
 read -p "Enter the username for the database: " MYSQL_USERNAME
