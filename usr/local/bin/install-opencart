@@ -7,13 +7,33 @@ EXTENSION_HELP='-e extension name ex. pdf_catalog <seperate with commas>'
 FOR_USER_HELP='-u user name'
 DATABASE_HELP='-d database name'
 TEMPLATE_HELP='-t template name ex. Journal <seperate with commas>'
-VERSION_HELP='-v version'
+VERSION_HELP='-v version ex stable (required)'
 HOST_HELP='-h database host'
 DOMAIN_HELP='-m domain url ex. www.opencart.com'
 PROJECT_HELP='-n project name ex. mystore'
 VERBOSE_HELP='-l = verbose'
+REMOVE_DB_HELP='-odb = remove database if exists'
 
 source /etc/opencart-installer.conf
+
+function help()
+{
+            echo ""
+            echo "Opencart Installer by Jason Clark <mithereal@gmail.com> and Nikos Tsitas <nktsitas@gmail.com>" 
+            echo ""
+            echo "Usage: opencart $VERSION_HELP"
+            echo $PROJECT_HELP 
+            echo $HOST_HELP
+            echo $FOR_USER_HELP
+            echo $DATABASE_HELP 
+            echo $TRUNCATE_HELP 
+            echo $DESTINATION_HELP 
+            echo $DOMAIN_HELP 
+            echo $TEMPLATE_HELP 
+            echo $EXTENSION_HELP 
+            echo $VERBOSE_HELP
+            echo $REMOVE_DB_HELP 
+}
 
 while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
     case $opt in
@@ -46,6 +66,9 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
         m)
             DOMAIN=$OPTARG
             ;;
+        odb)
+            REMOVE_DB=true
+            ;;
         n)
             PROJECT_NAME=$OPTARG
             echo "Project Name given: $PROJECT_NAME" >&2
@@ -64,24 +87,17 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
             exit 1
             ;;
         ?)
-            echo ""
-            echo "Opencart Installer by Jason Clark <mithereal@gmail.com> and Nikos Tsitas <nktsitas@gmail.com>" 
-            echo ""
-            echo "Usage: opencart  $PROJECT_HELP"
-            echo $VERSION_HELP 
-            echo $HOST_HELP
-            echo $FOR_USER_HELP
-            echo $DATABASE_HELP 
-            echo $TRUNCATE_HELP 
-            echo $DESTINATION_HELP 
-            echo $DOMAIN_HELP 
-            echo $TEMPLATE_HELP 
-            echo $EXTENSION_HELP 
-            echo $VERBOSE_HELP  
+            help
             exit 0
             ;;
     esac
 done
+
+if [ -z "$VERSION" ]
+then
+            help
+            exit 1
+fi
 
 OPENCART_PATH=$OPENCART_PATH/opencart
 CWD=$(pwd)
@@ -101,18 +117,9 @@ if [ ! -d "$TEMP_DIR" ]; then
 mkdir $TEMP_DIR;
 fi
 
-# -v <version> (version to install)
-if [ -z "$VERSION" ]
-then
-    VERSION="current"
-    OPENCART_PATH=$OPENCART_PATH/upload
-    echo ""
-    echo "using  echo "" version: $STABLE_VERSION" >&2
-else
-    echo ""
-    echo "using  echo "" version: $VERSION" >&2
-OPENCART_PATH=$OPENCART_PATH-$VERSION/upload
-fi
+echo "using version: $VERSION" >&2
+OPENCART_PATH=$OPENCART_PATH/upload
+
 
 #git project name
  if [ -z "$PROJECT_NAME" ]
@@ -229,6 +236,24 @@ if [ -f opencart/upload/index.php ];
 then
 OPENCART_PATH=$TEMP_DIR/opencart/upload
 fi 
+
+elif [ $VERSION == local ]
+then
+VERSION=current
+
+else
+# purge tmp folder
+rm -drf $TEMP_DIR/opencart
+
+# clone opencart
+cd $TEMP_DIR
+git clone -b v$VERSION $STABLE
+
+# check if opencart is in folder
+if [ -f opencart/upload/index.php ];
+then
+OPENCART_PATH=$TEMP_DIR/opencart/upload
+fi 
 fi
 
 # copy opencart
@@ -284,6 +309,16 @@ else
     icacls $DESTINATION_PATH/image/cache/ /grant:r Everyone:F /t
     icacls $DESTINATION_PATH/image/data/ /grant:r Everyone:F /t
     icacls $DESTINATION_PATH/download/ /grant:r Everyone:F /t
+fi
+
+# remove database
+if [ "$REMOVE_DB" ]; then
+if [[ "$MYSQL_PASS" == '' ]]; then
+    echo "drop database $DATABASE" | mysql -u $MYSQL_USERNAME
+else
+    echo "drop database $DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS
+fi
+
 fi
 
 # create database

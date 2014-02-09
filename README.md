@@ -37,24 +37,22 @@ Windows Install
   alternatively create folder  *&lt;cygwin_folder&gt;*/home/username/Projects/opencart/ if doesn’t exist
 6. copy paste opencart versions u work with in there so you end up with   
 
-		<cygwin_folder>/home/username/Projects/opencart/opencart-1.5.5.1/upload/…
-		<cygwin_folder>/home/username/Projects/opencart/opencart-1.5.6.1/upload/…
+		<cygwin_folder>/home/username/Projects/opencart/opencart/upload/…
                  and optionally
-                <cygwin_folder>/usr/src/opencart/opencart-1.5.5.1/upload/…
-		<cygwin_folder>/usr/src/opencart/opencart-1.5.6.1/upload/…
+		<cygwin_folder>/usr/local/src/opencart/opencart/upload/…
 		
 		
 6. Copy the working templates into a folder structure like below in this case stable is the branch this will change with release ex u could target 1.5.5.1 by adding a 1.5.5.1 dir under the theme name
 
 		<cygwin_folder>/home/username/Projects/opencart/theme/Journal/stable/upload….
                 and optionally
-		<cygwin_folder>/usr/src/opencart/theme/Journal/stable/upload….
+		<cygwin_folder>/usr/local/src/opencart/theme/Journal/stable/upload….
 
 6. Copy paste base folder of working extensions  
 
 		<cygwin_folder>/home/username/Projects/opencart/extension/extension-name/stable/upload….
                 and optionally
-		<cygwin_folder>/usr/src/opencart/extension/extension-name/stable/upload….
+		<cygwin_folder>/usr/local/src/opencart/extension/extension-name/stable/upload….
 
 8. Copy **install\_opencart** into *&lt;cygwin_folder&gt;*/usr/local/bin
 9. Run:  
@@ -68,7 +66,7 @@ Usage
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-	        opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version>
+	        opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version> -odb <overwrite database>
 	  
 versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
 
