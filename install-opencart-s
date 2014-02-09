@@ -11,8 +11,8 @@ VERSION_HELP='-v version ex stable (required)'
 HOST_HELP='-h database host'
 DOMAIN_HELP='-m domain url ex. www.opencart.com'
 PROJECT_HELP='-n project name ex. mystore'
-VERBOSE_HELP='-l = verbose'
-REMOVE_DB_HELP='-odb = remove database if exists'
+VERBOSE_HELP='-l true = verbose'
+REMOVE_DB_HELP='-o true = remove database if exists'
 
 REMOVE_ON_ERROR="false"
 OPENCART_PATH="$HOME/Projects/opencart"
@@ -28,6 +28,7 @@ STABLE_VERSION="1.5.6.1"
 STABLE="https://github.com/opencart/opencart.git"
 UPSTREAM="https://github.com/opencart/opencart.git"
 ORIGIN="git@github.com:mithereal/opencart.git"
+
 
 
 function help()
@@ -49,7 +50,7 @@ function help()
             echo $REMOVE_DB_HELP 
 }
 
-while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
+while getopts ":p:u:d:t:v:m:n:c:h:e:l:o:?" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
@@ -80,7 +81,7 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
         m)
             DOMAIN=$OPTARG
             ;;
-        odb)
+        o)
             REMOVE_DB=true
             ;;
         n)
@@ -292,10 +293,11 @@ if [[ -z "$VERBOSE" ]]; then
 
     chmod 0777 $DESTINATION_PATH/system/cache/ > /dev/null 2>&1
     chmod 0777 $DESTINATION_PATH/system/logs/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/image/catalog/ > /dev/null 2>&1
     chmod 0777 $DESTINATION_PATH/image/ > /dev/null 2>&1
     chmod 0777 $DESTINATION_PATH/image/cache/ > /dev/null 2>&1
     chmod 0777 $DESTINATION_PATH/image/data/ > /dev/null 2>&1
-    chmod 0777 $DESTINATION_PATH/download/ > /dev/null 2>&1
+    chmod 0777 $DESTINATION_PATH/system/download/ > /dev/null 2>&1
 else
     # change permissions
     chown -R $FOR_USER:$FOR_USER $DESTINATION_PATH 
@@ -307,9 +309,10 @@ else
     chmod 0777 $DESTINATION_PATH/system/cache/ 
     chmod 0777 $DESTINATION_PATH/system/logs/
     chmod 0777 $DESTINATION_PATH/image/ 
+    chmod 0777 $DESTINATION_PATH/image/catalog/
     chmod 0777 $DESTINATION_PATH/image/cache/ 
     chmod 0777 $DESTINATION_PATH/image/data/ 
-    chmod 0777 $DESTINATION_PATH/download/ 
+    chmod 0777 $DESTINATION_PATH/system/download/ 
 fi
 else
     icacls $DESTINATION_PATH /grant:r Everyone:RX /t
@@ -320,9 +323,10 @@ else
     icacls $DESTINATION_PATH/system/cache/ /grant:r Everyone:F /t
     icacls $DESTINATION_PATH/system/logs/ /grant:r Everyone:F /t
     icacls $DESTINATION_PATH/image/ /grant:r Everyone:F /t
+    icacls $DESTINATION_PATH/image/catalog/ /grant:r Everyone:F /t
     icacls $DESTINATION_PATH/image/cache/ /grant:r Everyone:F /t
     icacls $DESTINATION_PATH/image/data/ /grant:r Everyone:F /t
-    icacls $DESTINATION_PATH/download/ /grant:r Everyone:F /t
+    icacls $DESTINATION_PATH/system/download/ /grant:r Everyone:F /t
 fi
 
 # remove database
@@ -342,24 +346,14 @@ else
     echo "create database $DATABASE" | mysql -u $MYSQL_USERNAME -p$MYSQL_PASS
 fi
 
-# abort/exit if database creation fails
+
 if [ $? -eq 0 ]; then
     echo "Database $DATABASE Created Successfully."
-else
-    echo "Error in database creation. Manual install required."
-    if [[ "$REMOVE_ON_ERROR" == 'true' ]]; then
-    rm -rf $DESTINATION_PATH/
-    fi
-fi
-
-
-if [[ "$MYSQL_PASS" == '' ]]; then
+    if [[ "$MYSQL_PASS" == '' ]]; then
     php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password "" --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 else
     php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 fi
-
-
 
 if $TRUNCATE; then
     echo "Truncating opencart $VERSION database..."
@@ -370,8 +364,20 @@ if $TRUNCATE; then
     fi
 fi
 
+if [ $? -eq 0 ]; then
 # remove install folder
 rm -rf $DESTINATION_PATH/install/
+else
+echo "Error in database creation. Manual install required."
+fi
+
+else
+    echo "Error in database creation. Manual install required."
+    if [[ "$REMOVE_ON_ERROR" == 'true' ]]; then
+    rm -rf $DESTINATION_PATH/
+    fi
+fi
+
 
 # install template 
 if [ -z "$TEMPLATE" ]
