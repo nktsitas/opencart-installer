@@ -1,6 +1,17 @@
 #!/bin/bash
 OIFS=$IFS;
 IFS=",";
+TRUNCATE_HELP='-c remove demo products'
+DESTINATION_HELP='-p project destination path'
+EXTENSION_HELP='-e extension name ex. pdf_catalog <seperate with commas>'
+FOR_USER_HELP='-u user name'
+DATABASE_HELP='-d database name'
+TEMPLATE_HELP='-t template name ex. Journal <seperate with commas>'
+VERSION_HELP='-v version'
+HOST_HELP='-h database host'
+DOMAIN_HELP='-m domain url ex. www.opencart.com'
+PROJECT_HELP='-n project name ex. mystore'
+VERBOSE_HELP='-l = verbose'
 
 source /etc/opencart-installer.conf
 
@@ -8,37 +19,32 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
     case $opt in
         p)
             DESTINATION_PATH=$OPTARG
-            # echo "-p was triggered, Parameter: $DESTINATION_PATH" >&2
             ;;
         e)
             EXTENSION=$OPTARG
-            # echo "-e was triggered, Parameter: $EXTENSION" >&2
             ;;
         u)
             FOR_USER=$OPTARG
-            # echo "-u was triggered, Parameter: $FOR_USER" >&2
             ;;
         d)
             DATABASE=$OPTARG
-            # echo "-d was triggered, Parameter: $DATABASE" >&2
             ;;
         t)
             TEMPLATE=$OPTARG
+            
             # echo "-t was triggered, Parameter: $TEMPLATE" >&2
             ;;
         v)
             VERSION=$OPTARG
-            # echo "-v was triggered, Parameter: $VERSION" >&2
             ;;
            
         h)
              HOST=$OPTARG
-            # echo "-h was triggered, Parameter: $HOST" >&2
+
             ;;
 
         m)
             DOMAIN=$OPTARG
-            # echo "-m was triggered, Parameter: $DOMAIN" >&2
             ;;
         n)
             PROJECT_NAME=$OPTARG
@@ -50,7 +56,7 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
             ;;
         c)
             TRUNCATE=true
-            echo "will truncate the database"
+            echo "the demo products will be removed"
             ;;
        
         :)
@@ -61,13 +67,24 @@ while getopts ":p:u:d:t:v:m:n:c:h:e:l:?" opt; do
             echo ""
             echo "Opencart Installer by Jason Clark <mithereal@gmail.com> and Nikos Tsitas <nktsitas@gmail.com>" 
             echo ""
-            echo "Usage: opencart -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -l = verbose" 
-            exit 1
+            echo "Usage: opencart  $PROJECT_HELP"
+            echo $VERSION_HELP 
+            echo $HOST_HELP
+            echo $FOR_USER_HELP
+            echo $DATABASE_HELP 
+            echo $TRUNCATE_HELP 
+            echo $DESTINATION_HELP 
+            echo $DOMAIN_HELP 
+            echo $TEMPLATE_HELP 
+            echo $EXTENSION_HELP 
+            echo $VERBOSE_HELP  
+            exit 0
             ;;
     esac
 done
 
 OPENCART_PATH=$OPENCART_PATH/opencart
+CWD=$(pwd)
 templateArray=($TEMPLATE);
 extensionArray=($EXTENSION);
 
@@ -88,24 +105,26 @@ fi
 if [ -z "$VERSION" ]
 then
     VERSION="current"
-    echo "using version: $STABLE_VERSION" >&2
+    OPENCART_PATH=$OPENCART_PATH/upload
+    echo ""
+    echo "using  echo "" version: $STABLE_VERSION" >&2
 else
-    echo "using version: $VERSION" >&2
-OPENCART_PATH=$OPENCART_PATH/opencart-$VERSION
+    echo ""
+    echo "using  echo "" version: $VERSION" >&2
+OPENCART_PATH=$OPENCART_PATH-$VERSION/upload
 fi
 
+#git project name
+ if [ -z "$PROJECT_NAME" ]
+    then
+    PROJECT_NAME='mystore'
+ fi
 
 # -p <path> (current folder if none given)
 if [ -z "$DESTINATION_PATH" ]
 then
-    if [ -z "$PROJECT_NAME" ]
-    then
-        DESTINATION_PATH="mystore"
-        echo "no destination path/project name given, setting to: $PWD/mystore" >&2
-    else
-        DESTINATION_PATH=$PROJECT_NAME
+        DESTINATION_PATH=$CWD/$PROJECT_NAME
         echo "no destination path given, setting to project name: $DESTINATION_PATH" >&2
-    fi
 else
     echo "destination path: $DESTINATION_PATH" >&2
 fi
@@ -119,10 +138,10 @@ else
     echo "user: $FOR_USER" >&2
 fi
 
-# -h <hostname> (http://cheetasoft.gr/<domain> if none given)
+# -h <hostname> (http://example.com/<domain> if none given)
 if [ -z "$HOST" ]
 then
-  HOST="cheetasoft.gr"
+  HOST="example.com"
 echo "no hostname given, setting default: $HOST" >&2
 else
     echo "host: $HOST" >&2
@@ -137,7 +156,7 @@ then
         echo "no domain/project name given, setting default: $DOMAIN" >&2
     else
         DOMAIN="http://$HOST/$PROJECT_NAME/"
-        echo "no domain given, setting with project name: $DOMAIN" >&2
+        echo "no domain given, setting default: $DOMAIN" >&2
     fi
 else
     echo "domain: $DOMAIN" >&2
@@ -152,7 +171,7 @@ then
         echo "no database/project name given, setting default: $DATABASE" >&2
     else
         DATABASE="${FOR_USER}_${PROJECT_NAME}"
-        echo "no database given, setting with project name: $DATABASE" >&2
+        echo "no database given, setting default: $DATABASE" >&2
     fi
 else
     echo "database: $DATABASE" >&2
@@ -213,10 +232,9 @@ fi
 fi
 
 # copy opencart
-mkdir $DESTINATION_PATH
+echo "Installing opencart $VERSION..."
 cp -r $OPENCART_PATH/* $DESTINATION_PATH
 cp $OPENCART_PATH/.htaccess.txt $DESTINATION_PATH/.htaccess
-cp $OPENCART_PATH/.gitignore $DESTINATION_PATH/.gitignore
 
 # rename config files 
 mv $DESTINATION_PATH/config-dist.php $DESTINATION_PATH/config.php
@@ -279,13 +297,13 @@ fi
 if [ $? -eq 0 ]; then
     echo "Database $DATABASE Created Successfully."
 else
-    echo "Error in database creation. Aborting."
+    echo "Error in database creation. Manual install required."
+    if [[ "$REMOVE_ON_ERROR" == 'true' ]]; then
     rm -rf $DESTINATION_PATH/
-    exit 1
+    fi
 fi
 
 
-echo "Installing opencart $VERSION..."
 if [[ "$MYSQL_PASS" == '' ]]; then
     php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password "" --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
 else
@@ -352,8 +370,15 @@ IFS=$OIFS;
 
 #set up git repo
 cd $DESTINATION_PATH
+if [[ -z "$VERBOSE" ]]; then
+git init > /dev/null 2>&1
+git add . > /dev/null 2>&1
+git commit -m "initial commit" > /dev/null 2>&1
+echo "$PROJECT_NAME has beem placed under revision control"
+else
 git init
 git add .
 git commit -m "initial commit"
+fi
 
 exit 0
