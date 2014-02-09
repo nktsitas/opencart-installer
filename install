@@ -1,0 +1,8 @@
+#!/bin/bash
+
+sudo cp -r usr/* /usr
+sudo cp -r etc/* /etc
+cp -r home/user/* ~/.
+
+echo "Install Complete"
+exit 0
