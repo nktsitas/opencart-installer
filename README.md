@@ -66,7 +66,7 @@ Usage
 1. navigate to the folder you wish to install opencart
 2. run:  
 
-	        opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version> -odb <overwrite database>
+	        opencart-install -n <project_name> -u <user_name> -d <database_name> -m <domain_url> -h <host_url> -t <theme1,theme2,theme3> -e <extension1,extension2,extension3> -v <version> -o <overwrite database>
 	  
 versions: stable = fetch the latest stable branch via wget | origin = clone the latest from your git repo | upstream = clone the main opencart git repo 
 
