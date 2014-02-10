@@ -157,13 +157,12 @@ fi
 # -m <domain> (http://<hostname>/mystore if none given)
 if [ -z "$DOMAIN" ]
 then
+ DOMAIN="$HOST"
     if [ -z "$PROJECT_NAME" ]
     then
-        DOMAIN="http://$HOST/mystore/"
         echo "no domain/project name given, setting default: $DOMAIN" >&2
     else
-        DOMAIN="http://$HOST/$PROJECT_NAME/"
-        echo "no domain given, setting default: $DOMAIN" >&2
+        echo "setting project name to : $PROJECT_NAME" >&2
     fi
 else
     echo "domain: $DOMAIN" >&2
@@ -335,9 +334,9 @@ fi
 if [ $? -eq 0 ]; then
     echo "Database $DATABASE Created Successfully."
     if [[ "$MYSQL_PASS" == '' ]]; then
-    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password "" --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
+    php $DESTINATION_PATH/install/cli_install.php install --db $MYSQL_HOST --user $MYSQL_USERNAME  --db_user $MYSQL_USERNAME --db_password "" --dbname $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN --domain $PROJECT_NAME
 else
-    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
+    php $DESTINATION_PATH/install/cli_install.php install --db $MYSQL_HOST --user $MYSQL_USERNAME  --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --dbname $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN --domain $PROJECT_NAME
 fi
 
 if $TRUNCATE; then

@@ -14,23 +14,6 @@ PROJECT_HELP='-n project name ex. mystore'
 VERBOSE_HELP='-l true = verbose'
 REMOVE_DB_HELP='-o true = remove database if exists'
 
-REMOVE_ON_ERROR="false"
-OPENCART_PATH="$HOME/Projects/opencart"
-#OPENCART_PATH="/usr/src/opencart/opencart"
-TEMP_DIR="$HOME/Projects/opencart/tmp"
-EXTENSION_DIR="$HOME/Projects/opencart/extension"
-#EXTENSION_DIR="/usr/src/opencart/extension"
-THEME_DIR="$HOME/Projects/opencart/theme"
-#THEME_DIR="$/usr/src/opencart/theme"
-TRUNCATE_FILE="$HOME/Projects/opencart/truncate_opencart.sql"
-#TRUNCATE_FILE="/usr/src/opencart/truncate_opencart.sql"
-STABLE_VERSION="1.5.6.1"
-STABLE="https://github.com/opencart/opencart.git"
-UPSTREAM="https://github.com/opencart/opencart.git"
-ORIGIN="git@github.com:mithereal/opencart.git"
-
-
-
 function help()
 {
             echo ""
@@ -172,13 +155,12 @@ fi
 # -m <domain> (http://<hostname>/mystore if none given)
 if [ -z "$DOMAIN" ]
 then
+ DOMAIN="$HOST"
     if [ -z "$PROJECT_NAME" ]
     then
-        DOMAIN="http://$HOST/mystore/"
         echo "no domain/project name given, setting default: $DOMAIN" >&2
     else
-        DOMAIN="http://$HOST/$PROJECT_NAME/"
-        echo "no domain given, setting default: $DOMAIN" >&2
+        echo "setting project name to : $PROJECT_NAME" >&2
     fi
 else
     echo "domain: $DOMAIN" >&2
@@ -350,9 +332,9 @@ fi
 if [ $? -eq 0 ]; then
     echo "Database $DATABASE Created Successfully."
     if [[ "$MYSQL_PASS" == '' ]]; then
-    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password "" --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
+    php $DESTINATION_PATH/install/cli_install.php install --db $MYSQL_HOST --user $MYSQL_USERNAME  --db_user $MYSQL_USERNAME --db_password "" --dbname $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN --domain $PROJECT_NAME
 else
-    php $DESTINATION_PATH/install/cli_install.php install --db_host $MYSQL_HOST --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --db_name $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN
+    php $DESTINATION_PATH/install/cli_install.php install --db $MYSQL_HOST --user $MYSQL_USERNAME  --db_user $MYSQL_USERNAME --db_password $MYSQL_PASS --dbname $DATABASE --db_prefix oc_ --username admin --password admin123 --email admin@example.com --agree_tnc yes --http_server $DOMAIN --domain $PROJECT_NAME
 fi
 
 if $TRUNCATE; then
