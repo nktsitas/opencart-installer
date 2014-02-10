@@ -1,6 +1,8 @@
 Command Line Opencart Installer
 =====================
-
+Not for use by the opencart team, sorry for writing this one, my mistake for ever touching opencart, your cli installer IS BROKEN, and you are unwilling to fix your code, how can anyone build for this project when the owner is too arrogant to accept a free fix!!
+best bet stay away from this project, i wont contribute anymore dont worry!!!!
+if anyone wants to use this contact me for the fixed cli. i cant work with those unwilling to accept they make mistakes!!
 A command line installer for opencart.
 
 
