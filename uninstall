@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo rm /usr/local/bin/install-opencart
+sudo rm /usr/local/src/truncate_opencart.sql
+sudo rm /etc/opencart-installer.conf
+rm ~/Projects/opencart/truncate_opencart.sql

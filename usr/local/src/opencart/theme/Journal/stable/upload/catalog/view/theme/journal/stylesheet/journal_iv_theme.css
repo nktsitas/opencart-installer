@@ -1,0 +1,126 @@
+/*
+	Aditional styles for Journal IV skin
+*/
+
+#logo a img{
+	max-height: 78px;
+}
+
+#menu > ul{
+	border-right: 1px solid;
+}
+
+header, header .top-header{
+	box-shadow: none;
+}
+
+header .top-header{
+	top:80px;
+}
+
+.top-links{
+	border-bottom: 1px solid #dbdbdb;
+}
+
+.slider_bg{
+	position: relative;
+	width: 100%;
+}
+
+.product-grid .price-old, #content .box-product .price-old{
+	display: none;
+}
+
+
+a.button{
+	line-height: 2.6;
+}
+
+#content .box-heading{
+	padding: 0 0 7px 0;
+	border-bottom: 1px solid;
+	display: inline-block;
+	vertical-align: top;
+}
+
+#content > h1, #column-right .box .box-heading{
+	border-bottom: 1px solid;
+	padding-top: 15px;
+	padding-bottom: 14px;
+	height: 48px;
+	max-height: 48px;
+}
+
+.htabs a{
+	padding:12px;
+}
+
+#journal-header .cart{
+	box-shadow: none;
+}
+
+#menu > ul > li > div{
+	box-shadow: 0 0px 4px -1px rgba(0,0,0,0.5)
+}
+
+
+#column-right .column-head{
+	height: 0px;
+}
+
+#column-right .column-head + .slideshow, #column-right .column-head + .banner, #column-right .column-head + .journal-slider{
+	margin-top: 0px;
+}
+
+#column-right .box-product > div{
+	border-bottom: 1px solid;
+	padding: 0;
+	padding-top: 3px;
+}
+
+#column-right .box-category > ul > li > a{
+	border-color: #f4f4f4;
+}
+
+#column-right .prod > li{
+	border-bottom: 1px solid;
+}
+
+.product-grid .image, #content .box-product .image, .breadcrumb{
+	border-bottom: 1px solid #dbdbdb;
+}
+
+#articleComments{
+	background-color: #f4f4f4 !important;
+}
+
+#productRelated h4{
+	padding-left: 0;
+}
+
+#container #notification .success, #container #notification .information{
+	height: 47px;
+	line-height: 1.3;
+	padding-top: 16px;
+	border: none;
+}
+
+@media only screen and (max-width: 980px){
+
+	header .top-header{
+      top: 120px;
+    }
+    #journal-header .cart #cart{
+       border-bottom-width: 1px;
+	   border-bottom-style: solid;
+    }
+}
+
+@media only screen and (max-width: 760px) {    
+
+  #journal-header .top-links{
+  	border-bottom: 1px solid;
+  }
+}
+
+
